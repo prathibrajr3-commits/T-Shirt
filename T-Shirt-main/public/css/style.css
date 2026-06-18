@@ -1,0 +1,645 @@
+/* Import Outfit & Inter fonts */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --bg-darker: #090d16;
+    --bg-dark: #0f172a;
+    --bg-card: rgba(30, 41, 59, 0.5);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --primary-color: #8b5cf6;
+    --primary-hover: #7c3aed;
+    --primary-glow: rgba(139, 92, 246, 0.3);
+    --secondary-color: #3b82f6;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+}
+
+body {
+    background-color: var(--bg-darker);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.1) 0px, transparent 50%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6, .brand-font {
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2);
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(139, 92, 246, 0.3);
+    box-shadow: 0 12px 30px 0 rgba(139, 92, 246, 0.15);
+}
+
+/* Custom Navigation */
+.navbar-custom {
+    background: rgba(9, 13, 22, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 0;
+}
+
+.navbar-brand .logo-text {
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #a78bfa 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-link-custom {
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: color 0.2s;
+    text-decoration: none;
+}
+
+.nav-link-custom:hover, .nav-link-custom.active {
+    color: var(--primary-color);
+}
+
+/* Inputs and Forms */
+.form-control-custom {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary) !important;
+    border-radius: 8px;
+    padding: 12px;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-control-custom:focus {
+    background: rgba(15, 23, 42, 0.8);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    outline: none;
+}
+
+.form-control-custom:disabled,
+.form-control-custom[readonly] {
+    background: rgba(15, 23, 42, 0.3) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.form-label-custom {
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+/* Buttons */
+.btn-premium {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #7c3aed 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+.btn-premium:hover {
+    background: linear-gradient(135deg, #9333ea 0%, #6d28d9 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+    color: white;
+}
+
+.btn-premium-outline {
+    background: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-premium-outline:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+/* Badge tags */
+.badge-custom {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.badge-primary-custom {
+    background: var(--primary-glow);
+    color: #c084fc;
+    border: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+/* Product list specifics */
+.product-image-container {
+    position: relative;
+    overflow: hidden;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    height: 320px;
+    background: #1e293b;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.glass-card:hover .product-image {
+    transform: scale(1.08);
+}
+
+.price-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #f8fafc;
+}
+
+.price-discounted {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-right: 8px;
+}
+
+.price-active {
+    color: #10b981;
+    font-weight: 700;
+}
+
+/* Cart dropdown/list */
+.cart-item-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #1e293b;
+}
+
+/* Reviews styles */
+.review-card {
+    background: rgba(30, 41, 59, 0.3);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+/* Stepper tracking */
+.stepper-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    position: relative;
+}
+
+.stepper-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #1e293b;
+    z-index: 1;
+}
+
+.stepper-item {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.stepper-item .step-counter {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #1e293b;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    margin-bottom: 8px;
+    border: 3px solid var(--bg-darker);
+    transition: all 0.3s;
+}
+
+.stepper-item.completed .step-counter {
+    background: var(--success-color);
+    color: white;
+}
+
+.stepper-item.active .step-counter {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 0 15px var(--primary-color);
+}
+
+.stepper-item .step-name {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.stepper-item.active .step-name {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+/* Admin Dashboard Cards */
+.admin-metric-card {
+    padding: 24px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.4) 100%);
+    border: 1px solid var(--border-color);
+}
+
+/* ===== ADMIN SIDEBAR — SCROLLABLE FIXED PANEL ===== */
+.sidebar-admin {
+    background: rgba(9, 13, 22, 0.95);
+    border-right: 1px solid var(--border-color);
+    /* Full viewport height, fixed to the left edge */
+    height: 100vh;
+    min-height: 100vh;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    /* Flex column: header | scrollable nav | footer */
+    display: flex !important;
+    flex-direction: column;
+    overflow: hidden; /* outer container never scrolls */
+    z-index: 100;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Scrollable middle nav area */
+.sidebar-scrollable {
+    flex: 1 1 0;
+    min-height: 0; /* critical — allows flex child to shrink below content size */
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 0 8px;
+}
+
+/* Firefox custom scrollbar */
+.sidebar-scrollable {
+    scrollbar-width: thin;
+    scrollbar-color: #8b5cf6 rgba(15, 23, 42, 0.4);
+}
+
+/* Webkit (Chrome, Edge, Safari) custom scrollbar */
+.sidebar-scrollable::-webkit-scrollbar {
+    width: 4px;
+}
+.sidebar-scrollable::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 10px;
+}
+.sidebar-scrollable::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #8b5cf6 0%, #3b82f6 100%);
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+}
+.sidebar-scrollable::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #a78bfa 0%, #60a5fa 100%);
+    box-shadow: 0 0 12px rgba(167, 139, 250, 0.7);
+}
+
+/* Pinned bottom area (View Storefront + Sign Out) */
+.sidebar-footer {
+    flex-shrink: 0;
+    padding: 12px 0 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(9, 13, 22, 0.98);
+}
+
+/* ===== SIDEBAR LINKS ===== */
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.2s;
+}
+
+.sidebar-link:hover, .sidebar-link.active {
+    background: var(--primary-glow);
+    color: var(--primary-color);
+}
+
+.sidebar-link i {
+    margin-right: 12px;
+    font-size: 1.1rem;
+}
+
+/* Alerts custom styling */
+.alert-custom-success {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #34d399;
+}
+
+.alert-custom-danger {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+}
+
+/* custom table */
+.table-custom {
+    color: var(--text-primary) !important;
+}
+.table-custom th {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    font-family: 'Outfit', sans-serif;
+}
+.table-custom td {
+    background: rgba(30, 41, 59, 0.2) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+    vertical-align: middle;
+}
+
+/* Hero Banner Slider Custom Styles */
+.hero-slider-container {
+    width: 100%;
+    min-height: 450px;
+    height: 450px;
+    position: relative;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    background: var(--bg-card);
+}
+
+.hero-slider {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-slide {
+    min-width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.hero-slide-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, rgba(9, 13, 22, 0.85) 0%, rgba(9, 13, 22, 0.5) 50%, rgba(9, 13, 22, 0.2) 100%);
+    z-index: 2;
+}
+
+.hero-slide-content {
+    color: var(--text-primary);
+    width: 100%;
+    z-index: 3;
+}
+
+.max-width-600 {
+    max-width: 600px;
+}
+
+/* Slider Controls */
+.slider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: var(--text-primary);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
+}
+
+.slider-arrow:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px var(--primary-glow);
+    color: white;
+}
+
+.prev-arrow {
+    left: 20px;
+}
+
+.next-arrow {
+    right: 20px;
+}
+
+.slider-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.slider-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.slider-dot.active {
+    background: var(--primary-color);
+    width: 28px;
+    border-radius: 6px;
+    box-shadow: 0 0 8px var(--primary-color);
+}
+
+/* Slide Text animations */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-slide .animate-fade-in-down,
+.hero-slide .animate-fade-in-left,
+.hero-slide .animate-fade-in-left-delay,
+.hero-slide .animate-fade-in-up {
+    opacity: 0;
+}
+
+.hero-slide.active .animate-fade-in-down {
+    animation: fadeInDown 0.6s ease forwards;
+}
+
+.hero-slide.active .animate-fade-in-left {
+    animation: fadeInLeft 0.6s ease 0.2s forwards;
+}
+
+.hero-slide.active .animate-fade-in-left-delay {
+    animation: fadeInLeft 0.6s ease 0.4s forwards;
+}
+
+.hero-slide.active .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease 0.6s forwards;
+}
+
+/* Scrollable Category Filter section with Dark Neon Theme scrollbar */
+.category-filter-scroll-container {
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: var(--primary-color) rgba(15, 23, 42, 0.4); /* For Firefox */
+    padding-right: 6px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* smooth mobile scroll */
+    
+    /* Subtle inner fade effect at top and bottom */
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 6%, #000 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 6%, #000 94%, transparent 100%);
+}
+
+/* Custom scrollbar styling for Webkit browsers (Chrome, Edge, Safari) */
+.category-filter-scroll-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.category-filter-scroll-container::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 10px;
+}
+
+.category-filter-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 5px var(--primary-glow);
+    transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.category-filter-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #a78bfa; /* lighter neon purple */
+    box-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+}
+
+
+/* ===== ADMIN SIDEBAR — MOBILE RESPONSIVE ===== */
+@media (max-width: 767.98px) {
+    /* On mobile, sidebar collapses (Bootstrap handles toggle).
+       When shown, it should flow normally (not fixed/full-height) */
+    .sidebar-admin {
+        position: relative !important;
+        height: auto;
+        max-height: 80vh;   /* limit so it doesn't swallow the screen */
+        width: 100% !important;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .sidebar-scrollable {
+        max-height: 50vh;
+    }
+}
