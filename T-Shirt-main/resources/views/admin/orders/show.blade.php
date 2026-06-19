@@ -79,6 +79,26 @@
             </div>
         </div>
 
+        @if($order->customer_cancelled_at)
+            <div class="glass-panel p-4 mb-4 border border-danger border-opacity-25 bg-danger bg-opacity-10">
+                <h4 class="brand-font mb-4 text-danger"><i class="fa-solid fa-circle-xmark me-2"></i>Customer Cancellation Information</h4>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <span class="text-secondary small d-block">Cancelled By</span>
+                        <strong class="text-white">Customer</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <span class="text-secondary small d-block">Cancellation Date</span>
+                        <strong class="text-white">{{ $order->customer_cancelled_at->timezone(config('app.timezone'))->format('M d, Y h:i A') }}</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <span class="text-secondary small d-block">Cancellation Reason</span>
+                        <strong class="text-white">{{ $order->customer_cancel_reason }}</strong>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <!-- Shipping and Customer Details -->
         <div class="glass-panel p-4 mb-4">
             <h4 class="brand-font mb-4 text-white">Delivery & Contact</h4>

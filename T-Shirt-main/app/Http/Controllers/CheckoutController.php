@@ -25,10 +25,26 @@ class CheckoutController extends Controller
             $total += $item['price'] * $item['quantity'];
         }
 
+        $discount = 0.00;
+        $couponCode = null;
+
+        if (session()->has('coupon')) {
+            $couponData = session()->get('coupon');
+            $coupon = \App\Models\Coupon::where('code', $couponData['code'])->first();
+            $errorMsg = null;
+            if ($coupon && $coupon->isValidForUser(auth()->user(), $total, $errorMsg)) {
+                $discount = $coupon->calculateDiscount($total);
+                $couponCode = $coupon->code;
+            } else {
+                session()->forget('coupon');
+                session()->flash('error', $errorMsg ?: 'Invalid coupon code');
+            }
+        }
+
         $user = auth()->user();
         $shippingSettings = ShippingSetting::getSettings();
 
-        return view('shop.checkout', compact('cart', 'total', 'user', 'shippingSettings'));
+        return view('shop.checkout', compact('cart', 'total', 'discount', 'couponCode', 'user', 'shippingSettings'));
     }
 
     public function store(Request $request)
@@ -49,9 +65,29 @@ class CheckoutController extends Controller
             $total += $item['price'] * $item['quantity'];
         }
 
+        // Validate coupon and calculate discount amount server-side
+        $discount = 0.00;
+        $couponId = null;
+        $couponCode = null;
+        $coupon = null;
+
+        if (session()->has('coupon')) {
+            $couponData = session()->get('coupon');
+            $coupon = \App\Models\Coupon::where('code', $couponData['code'])->first();
+            $errorMsg = null;
+            if ($coupon && $coupon->isValidForUser(auth()->user(), $total, $errorMsg)) {
+                $discount = $coupon->calculateDiscount($total);
+                $couponId = $coupon->id;
+                $couponCode = $coupon->code;
+            } else {
+                session()->forget('coupon');
+                return back()->with('error', $errorMsg ?: 'Invalid coupon code')->withInput();
+            }
+        }
+
         $shippingSettings = ShippingSetting::getSettings();
         $shipping = $shippingSettings->calculateShipping($total);
-        $finalTotal = $total + $shipping;
+        $finalTotal = max(0.00, $total - $discount) + $shipping;
 
         // Double check stock levels for all items
         foreach ($cart as $item) {
@@ -70,9 +106,12 @@ class CheckoutController extends Controller
 
                 $order = Order::create([
                     'user_id' => auth()->id(),
+                    'coupon_id' => $couponId,
+                    'coupon_code' => $couponCode,
                     'order_number' => $orderNumber,
                     'status' => 'pending',
                     'total_amount' => $finalTotal,
+                    'discount_amount' => $discount,
                     'payment_method' => 'cod',
                     'payment_status' => 'pending',
                     'shipping_address' => $request->shipping_address,
@@ -102,10 +141,23 @@ class CheckoutController extends Controller
                     'payment_status' => 'pending',
                 ]);
 
+                // Create coupon usage record & increment usage count
+                if ($couponId && $coupon) {
+                    \App\Models\CouponUsage::create([
+                        'coupon_id' => $couponId,
+                        'user_id' => auth()->id(),
+                        'order_id' => $order->id,
+                        'discount_amount' => $discount,
+                        'used_at' => now(),
+                    ]);
+                    $coupon->increment('usage_count');
+                }
+
                 DB::commit();
 
-                // Clear session cart
+                // Clear session cart & coupon
                 session()->forget('cart');
+                session()->forget('coupon');
 
                 return redirect()->route('orders.show', $order->id)->with('success', 'Order placed successfully! Order Number: ' . $orderNumber);
             } catch (\Exception $e) {
@@ -200,9 +252,25 @@ class CheckoutController extends Controller
             $total += $item['price'] * $item['quantity'];
         }
 
+        // Calculate coupon discount for Razorpay callback
+        $discount = 0.00;
+        $couponId = null;
+        $couponCode = null;
+        $coupon = null;
+
+        if (session()->has('coupon')) {
+            $couponData = session()->get('coupon');
+            $coupon = \App\Models\Coupon::where('code', $couponData['code'])->first();
+            if ($coupon) {
+                $discount = $coupon->calculateDiscount($total);
+                $couponId = $coupon->id;
+                $couponCode = $coupon->code;
+            }
+        }
+
         $shippingSettings = ShippingSetting::getSettings();
         $shipping = $shippingSettings->calculateShipping($total);
-        $finalTotal = $total + $shipping;
+        $finalTotal = max(0.00, $total - $discount) + $shipping;
 
         try {
             DB::beginTransaction();
@@ -220,9 +288,12 @@ class CheckoutController extends Controller
             // Create Order
             $order = Order::create([
                 'user_id' => auth()->id(),
+                'coupon_id' => $couponId,
+                'coupon_code' => $couponCode,
                 'order_number' => $orderNumber,
                 'status' => 'pending',
                 'total_amount' => $finalTotal,
+                'discount_amount' => $discount,
                 'payment_method' => 'razorpay',
                 'payment_status' => 'completed',
                 'shipping_address' => $request->shipping_address,
@@ -254,10 +325,23 @@ class CheckoutController extends Controller
                 'raw_response' => $request->all(),
             ]);
 
+            // Create coupon usage record & increment usage count
+            if ($couponId && $coupon) {
+                \App\Models\CouponUsage::create([
+                    'coupon_id' => $couponId,
+                    'user_id' => auth()->id(),
+                    'order_id' => $order->id,
+                    'discount_amount' => $discount,
+                    'used_at' => now(),
+                ]);
+                $coupon->increment('usage_count');
+            }
+
             DB::commit();
 
-            // Clear session cart and temporary data
+            // Clear session cart, coupon, and temporary data
             session()->forget('cart');
+            session()->forget('coupon');
             session()->forget(['checkout_phone', 'checkout_address']);
 
             return redirect()->route('orders.show', $order->id)->with('success', 'Order placed successfully via Razorpay! Order Number: ' . $orderNumber);

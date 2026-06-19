@@ -22,4 +22,20 @@ class OrderPolicy
     {
         return $user->isAdmin();
     }
+
+    /**
+     * Determine whether the user can cancel the order.
+     */
+    public function cancel(User $user, Order $order): \Illuminate\Auth\Access\Response
+    {
+        if ($user->id !== $order->user_id) {
+            return \Illuminate\Auth\Access\Response::deny('You do not own this order.');
+        }
+
+        if (!in_array($order->status, ['pending', 'confirmed'])) {
+            return \Illuminate\Auth\Access\Response::deny('This order can no longer be cancelled.');
+        }
+
+        return \Illuminate\Auth\Access\Response::allow();
+    }
 }

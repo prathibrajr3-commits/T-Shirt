@@ -20,6 +20,19 @@ class AdminDashboardController extends Controller
         $deliveredOrders = Order::where('status', 'delivered')->count();
         $cancelledOrders = Order::where('status', 'cancelled')->count();
 
+        // Cancellation Analytics breakdown
+        $totalCancelledOverall = Order::where('status', 'cancelled')->count();
+        $totalCancelledToday = Order::where('status', 'cancelled')->whereDate('cancelled_at', today())->count();
+        $totalCancelledThisMonth = Order::where('status', 'cancelled')->whereMonth('cancelled_at', now()->month)->whereYear('cancelled_at', now()->year)->count();
+
+        $customerCancelledOverall = Order::where('status', 'cancelled')->where('cancelled_by', 'customer')->count();
+        $customerCancelledToday = Order::where('status', 'cancelled')->where('cancelled_by', 'customer')->whereDate('cancelled_at', today())->count();
+        $customerCancelledThisMonth = Order::where('status', 'cancelled')->where('cancelled_by', 'customer')->whereMonth('cancelled_at', now()->month)->whereYear('cancelled_at', now()->year)->count();
+
+        $adminCancelledOverall = Order::where('status', 'cancelled')->where('cancelled_by', 'admin')->count();
+        $adminCancelledToday = Order::where('status', 'cancelled')->where('cancelled_by', 'admin')->whereDate('cancelled_at', today())->count();
+        $adminCancelledThisMonth = Order::where('status', 'cancelled')->where('cancelled_by', 'admin')->whereMonth('cancelled_at', now()->month)->whereYear('cancelled_at', now()->year)->count();
+
         // 2. Dynamic Performance Reports (Date Filtered)
         $range = $request->get('range', 'this_month');
         $startDate = match ($range) {
@@ -70,6 +83,25 @@ class AdminDashboardController extends Controller
         // 6. Recent Orders
         $recentOrders = Order::with('user')->latest()->take(5)->get();
 
+        // 7. Returns and Refunds Metrics
+        $pendingReturns = \App\Models\ReturnRequest::where('status', 'pending')->count();
+        $approvedReturns = \App\Models\ReturnRequest::where('status', 'approved')->count();
+        $completedRefunds = \App\Models\ReturnRequest::where('status', 'completed')->count();
+
+        $totalReturnRequests = \App\Models\ReturnRequest::count();
+        $deliveredOrdersCount = \App\Models\Order::whereNotNull('delivered_at')->count();
+        $returnRate = $deliveredOrdersCount > 0 ? ($totalReturnRequests / $deliveredOrdersCount) * 100 : 0.0;
+
+        // 8. Coupon and Marketing Metrics
+        $activeCoupons = \App\Models\Coupon::where('is_active', true)->count();
+        $totalCouponUsage = \App\Models\CouponUsage::count();
+        $discountGiven = \App\Models\Order::sum('discount_amount');
+
+        $topPerformingCouponModel = \App\Models\Coupon::orderBy('usage_count', 'desc')->first();
+        $topPerformingCoupon = $topPerformingCouponModel && $topPerformingCouponModel->usage_count > 0
+            ? $topPerformingCouponModel->code
+            : 'None';
+
         return view('admin.dashboard', compact(
             'totalSales',
             'ordersCount',
@@ -77,6 +109,23 @@ class AdminDashboardController extends Controller
             'processingOrders',
             'deliveredOrders',
             'cancelledOrders',
+            'pendingReturns',
+            'approvedReturns',
+            'completedRefunds',
+            'returnRate',
+            'activeCoupons',
+            'totalCouponUsage',
+            'discountGiven',
+            'topPerformingCoupon',
+            'totalCancelledOverall',
+            'totalCancelledToday',
+            'totalCancelledThisMonth',
+            'customerCancelledOverall',
+            'customerCancelledToday',
+            'customerCancelledThisMonth',
+            'adminCancelledOverall',
+            'adminCancelledToday',
+            'adminCancelledThisMonth',
             'range',
             'reportRevenue',
             'reportOrders',

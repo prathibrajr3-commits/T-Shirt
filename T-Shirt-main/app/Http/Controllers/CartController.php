@@ -14,7 +14,24 @@ class CartController extends Controller
         foreach ($cart as $item) {
             $total += $item['price'] * $item['quantity'];
         }
-        return view('shop.cart', compact('cart', 'total'));
+
+        $discount = 0.00;
+        $couponCode = null;
+
+        if (session()->has('coupon')) {
+            $couponData = session()->get('coupon');
+            $coupon = \App\Models\Coupon::where('code', $couponData['code'])->first();
+            $errorMsg = null;
+            if ($coupon && $coupon->isValidForUser(auth()->user(), $total, $errorMsg)) {
+                $discount = $coupon->calculateDiscount($total);
+                $couponCode = $coupon->code;
+            } else {
+                session()->forget('coupon');
+                session()->flash('error', $errorMsg ?: 'Invalid coupon code');
+            }
+        }
+
+        return view('shop.cart', compact('cart', 'total', 'discount', 'couponCode'));
     }
 
     public function add(Request $request, $id)
@@ -102,5 +119,49 @@ class CartController extends Controller
         }
 
         return back()->with('error', 'Item not found in cart.');
+    }
+
+    public function applyCoupon(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string',
+        ]);
+
+        $code = $request->code;
+        $coupon = \App\Models\Coupon::where('code', $code)->first();
+
+        if (!$coupon) {
+            return back()->with('error', 'Invalid coupon code');
+        }
+
+        // Calculate subtotal of cart
+        $cart = session()->get('cart', []);
+        if (empty($cart)) {
+            return back()->with('error', 'Your cart is empty');
+        }
+
+        $subtotal = 0;
+        foreach ($cart as $item) {
+            $subtotal += $item['price'] * $item['quantity'];
+        }
+
+        $errorMsg = null;
+        if (!$coupon->isValidForUser(auth()->user(), $subtotal, $errorMsg)) {
+            return back()->with('error', $errorMsg ?: 'Invalid coupon');
+        }
+
+        // Store coupon in session
+        session()->put('coupon', [
+            'id' => $coupon->id,
+            'code' => $coupon->code,
+        ]);
+
+        return back()->with('success', 'Coupon applied successfully.');
+    }
+
+    public function removeCoupon()
+    {
+        session()->forget('coupon');
+        return back()->with('success', 'Coupon removed successfully.');
     }
 }

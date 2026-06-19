@@ -66,6 +66,86 @@
     </div>
 </div>
 
+<!-- Return & Refund Metrics -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="admin-metric-card p-3">
+            <span class="text-secondary small d-block mb-1 text-truncate">Pending Returns</span>
+            <div class="d-flex align-items-center justify-content-between">
+                <h4 class="brand-font mb-0 text-warning">{{ $pendingReturns }}</h4>
+                <i class="fa-solid fa-rotate-left text-warning fs-4 opacity-75"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="admin-metric-card p-3">
+            <span class="text-secondary small d-block mb-1 text-truncate">Approved Returns</span>
+            <div class="d-flex align-items-center justify-content-between">
+                <h4 class="brand-font mb-0 text-info">{{ $approvedReturns }}</h4>
+                <i class="fa-solid fa-circle-check text-info fs-4 opacity-75"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="admin-metric-card p-3">
+            <span class="text-secondary small d-block mb-1 text-truncate">Completed Refunds</span>
+            <div class="d-flex align-items-center justify-content-between">
+                <h4 class="brand-font mb-0 text-success">{{ $completedRefunds }}</h4>
+                <i class="fa-solid fa-hand-holding-dollar text-success fs-4 opacity-75"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="admin-metric-card p-3">
+            <span class="text-secondary small d-block mb-1 text-truncate">Return Rate %</span>
+            <div class="d-flex align-items-center justify-content-between">
+                <h4 class="brand-font mb-0 text-primary">{{ number_format($returnRate, 1) }}%</h4>
+                <i class="fa-solid fa-chart-line text-primary fs-4 opacity-75"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Marketing Metrics -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="admin-metric-card p-3">
+            <span class="text-secondary small d-block mb-1 text-truncate">Active Coupons</span>
+            <div class="d-flex align-items-center justify-content-between">
+                <h4 class="brand-font mb-0 text-info">{{ $activeCoupons }}</h4>
+                <i class="fa-solid fa-ticket text-info fs-4 opacity-75"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="admin-metric-card p-3">
+            <span class="text-secondary small d-block mb-1 text-truncate">Total Coupon Usage</span>
+            <div class="d-flex align-items-center justify-content-between">
+                <h4 class="brand-font mb-0 text-success">{{ $totalCouponUsage }}</h4>
+                <i class="fa-solid fa-chart-simple text-success fs-4 opacity-75"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="admin-metric-card p-3">
+            <span class="text-secondary small d-block mb-1 text-truncate">Discount Given</span>
+            <div class="d-flex align-items-center justify-content-between">
+                <h4 class="brand-font mb-0 text-danger">₹{{ number_format($discountGiven, 2) }}</h4>
+                <i class="fa-solid fa-gift text-danger fs-4 opacity-75"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="admin-metric-card p-3">
+            <span class="text-secondary small d-block mb-1 text-truncate">Top Performing Coupon</span>
+            <div class="d-flex align-items-center justify-content-between">
+                <h4 class="brand-font mb-0 text-warning text-truncate" style="max-width: 100%;">{{ $topPerformingCoupon }}</h4>
+                <i class="fa-solid fa-trophy text-warning fs-4 opacity-75"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Performance Reports Section -->
 <div class="glass-panel p-4 mb-4">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
@@ -119,6 +199,51 @@
                 <strong class="text-info fs-4">₹{{ number_format($reportAOV, 2) }}</strong>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Cancellation Analytics Breakdown -->
+<div class="glass-panel p-4 mb-4">
+    <h4 class="brand-font mb-3 text-white"><i class="fa-solid fa-chart-line me-2 text-danger"></i>Cancellation Analytics</h4>
+    <p class="text-secondary small mb-4">Detailed breakdown of cancelled orders by cancellation source and period.</p>
+    
+    <div class="table-responsive">
+        <table class="table table-custom mb-0">
+            <thead>
+                <tr>
+                    <th>Cancellation Source</th>
+                    <th class="text-center">Today</th>
+                    <th class="text-center">This Month</th>
+                    <th class="text-center">Overall Counts</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <strong class="text-white"><i class="fa-solid fa-ban text-secondary me-2"></i>Total Cancelled Orders</strong>
+                    </td>
+                    <td class="text-center fw-bold text-danger">{{ $totalCancelledToday }}</td>
+                    <td class="text-center fw-bold text-danger">{{ $totalCancelledThisMonth }}</td>
+                    <td class="text-center fw-bold text-danger fs-5">{{ $totalCancelledOverall }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong class="text-white"><i class="fa-solid fa-user-xmark text-primary me-2"></i>Customer Cancelled Orders</strong>
+                    </td>
+                    <td class="text-center fw-bold text-warning">{{ $customerCancelledToday }}</td>
+                    <td class="text-center fw-bold text-warning">{{ $customerCancelledThisMonth }}</td>
+                    <td class="text-center fw-bold text-warning fs-5">{{ $customerCancelledOverall }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong class="text-white"><i class="fa-solid fa-user-shield text-info me-2"></i>Admin Cancelled Orders</strong>
+                    </td>
+                    <td class="text-center fw-bold text-info">{{ $adminCancelledToday }}</td>
+                    <td class="text-center fw-bold text-info">{{ $adminCancelledThisMonth }}</td>
+                    <td class="text-center fw-bold text-info fs-5">{{ $adminCancelledOverall }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

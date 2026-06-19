@@ -33,9 +33,12 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
+        'coupon_id',
+        'coupon_code',
         'order_number',
         'status',
         'total_amount',
+        'discount_amount',
         'payment_method',
         'payment_status',
         'shipping_address',
@@ -48,7 +51,22 @@ class Order extends Model
         'cancelled_at',
         'status_changed_at',
         'notes',
+        'customer_cancel_reason',
+        'customer_cancelled_at',
+        'cancelled_by',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'customer_cancelled_at' => 'datetime',
+            'shipped_at' => 'datetime',
+            'delivered_at' => 'datetime',
+            'cancelled_at' => 'datetime',
+            'status_changed_at' => 'datetime',
+            'discount_amount' => 'decimal:2',
+        ];
+    }
 
     protected static function booted()
     {
@@ -78,6 +96,43 @@ class Order extends Model
     public function histories()
     {
         return $this->hasMany(OrderHistory::class)->latest();
+    }
+
+    public function returnRequests()
+    {
+        return $this->hasMany(ReturnRequest::class);
+    }
+
+    public function returnRequest()
+    {
+        return $this->hasOne(ReturnRequest::class)->latestOfMany();
+    }
+
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
+    }
+
+    public function couponUsages()
+    {
+        return $this->hasMany(CouponUsage::class);
+    }
+
+    public function canRequestReturn(): bool
+    {
+        if ($this->status !== self::STATUS_DELIVERED) {
+            return false;
+        }
+
+        if (!$this->delivered_at || $this->delivered_at->addDays(7)->isPast()) {
+            return false;
+        }
+
+        $hasActive = $this->returnRequests()
+            ->whereIn('status', [ReturnRequest::STATUS_PENDING, ReturnRequest::STATUS_APPROVED, ReturnRequest::STATUS_COMPLETED])
+            ->exists();
+
+        return !$hasActive;
     }
 
     public function statusBadgeClass()
@@ -134,6 +189,9 @@ class Order extends Model
             $this->payment_status = 'completed';
         } elseif ($newStatus === self::STATUS_CANCELLED) {
             $this->cancelled_at = now();
+            if (!$this->cancelled_by) {
+                $this->cancelled_by = 'admin';
+            }
         }
 
         if ($shippingProvider !== null) {

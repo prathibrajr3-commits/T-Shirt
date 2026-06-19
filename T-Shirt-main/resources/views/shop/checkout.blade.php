@@ -139,11 +139,39 @@
                 @endif
                 @endif
 
+                @if($discount > 0)
+                <div class="d-flex justify-content-between mb-3 text-success">
+                    <span class="text-secondary text-success">Discount</span>
+                    <span class="fw-bold">-₹{{ number_format($discount, 2) }}</span>
+                </div>
+                @endif
+
+                <!-- Coupon Section -->
+                <div class="my-3 border-top border-secondary border-opacity-10 pt-3">
+                    @if($couponCode)
+                        <div class="d-flex justify-content-between align-items-center p-2 rounded bg-success bg-opacity-10 border border-success border-opacity-25 mb-3">
+                            <div>
+                                <span class="text-secondary small d-block" style="font-size: 0.75rem;">Applied Coupon</span>
+                                <strong class="text-success small">{{ $couponCode }}</strong>
+                            </div>
+                            <button type="submit" form="coupon-remove-form" class="btn btn-sm btn-link text-danger p-0 border-0 text-decoration-none small">Remove</button>
+                        </div>
+                    @else
+                        <div class="mb-3">
+                            <label for="coupon_code" class="form-label form-label-custom small mb-1">Apply Coupon</label>
+                            <div class="input-group">
+                                <input type="text" name="code" id="coupon_code" form="coupon-apply-form" class="form-control form-control-custom py-1" style="height: auto; font-size: 0.85rem;" placeholder="Coupon code..." required>
+                                <button type="submit" form="coupon-apply-form" class="btn btn-premium btn-sm px-3" style="font-size: 0.85rem;">Apply</button>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
                 <hr class="border-secondary opacity-25 my-3">
 
                 <div class="d-flex justify-content-between mb-4">
                     <span class="text-white fs-5 font-weight-bold">Total Amount</span>
-                    <span class="text-success fs-4 fw-bold">₹{{ number_format($total + $shipping, 2) }}</span>
+                    <span class="text-success fs-4 fw-bold">₹{{ number_format(max(0, $total - $discount) + $shipping, 2) }}</span>
                 </div>
 
                 <button type="submit" class="btn btn-premium w-100 py-3 mb-2">
@@ -155,6 +183,14 @@
             </div>
         </div>
     </div>
+</form>
+
+<!-- External Coupon Forms (To avoid form nesting in HTML) -->
+<form action="{{ route('coupon.apply') }}" method="POST" id="coupon-apply-form" style="display:none;">
+    @csrf
+</form>
+<form action="{{ route('coupon.remove') }}" method="POST" id="coupon-remove-form" style="display:none;">
+    @csrf
 </form>
 @endsection
 

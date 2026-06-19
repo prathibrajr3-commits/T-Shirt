@@ -50,12 +50,22 @@
                 <a href="{{ route('admin.orders.index') }}" class="sidebar-link {{ Request::is('admin/orders*') ? 'active' : '' }}">
                     <i class="fa-solid fa-boxes-packing"></i> Orders
                 </a>
+                <a href="{{ route('admin.returns.index') }}" class="sidebar-link {{ Request::is('admin/returns*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-rotate-left text-warning"></i> Returns & Refunds
+                </a>
                 <a href="{{ route('admin.banners.index') }}" class="sidebar-link {{ Request::is('admin/banners*') ? 'active' : '' }}">
                     <i class="fa-solid fa-images"></i> Banners
                 </a>
                 <a href="{{ route('admin.promotions.index') }}" class="sidebar-link {{ Request::is('admin/promotions*') ? 'active' : '' }}">
                     <i class="fa-solid fa-percent text-warning"></i> Promotions
                 </a>
+
+                <div class="mt-4 pt-2 border-top border-secondary border-opacity-10">
+                    <div class="text-secondary small px-3 mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Marketing</div>
+                    <a href="{{ route('admin.coupons.index') }}" class="sidebar-link {{ Request::is('admin/coupons*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-ticket text-warning"></i> Coupons
+                    </a>
+                </div>
 
                 <div class="mt-4 pt-2 border-top border-secondary border-opacity-10">
                     <div class="text-secondary small px-3 mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Appearance</div>

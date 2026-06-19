@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\AdminBannerController;
 use App\Http\Controllers\Admin\AdminPromotionController;
 use App\Http\Controllers\Admin\AdminShippingController;
 use App\Http\Controllers\Admin\AdminSiteSettingController;
+use App\Http\Controllers\Admin\AdminCouponController;
 
 // Storefront
 Route::get('/', [ShopController::class, 'index'])->name('home');
@@ -36,6 +37,8 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove/{key}', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/coupon/apply', [CartController::class, 'applyCoupon'])->name('coupon.apply');
+Route::post('/cart/coupon/remove', [CartController::class, 'removeCoupon'])->name('coupon.remove');
 
 // Authenticated Customer Routes
 Route::middleware(['auth'])->group(function () {
@@ -48,6 +51,8 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::post('/orders/{id}/return', [OrderController::class, 'requestReturn'])->name('orders.return');
     
     Route::post('/products/{productId}/review', [ReviewController::class, 'store'])->name('reviews.store');
 });
@@ -76,6 +81,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
     Route::put('/orders/{id}', [AdminOrderController::class, 'update'])->name('admin.orders.update');
+
+    // Returns & Refunds Management
+    Route::get('/returns', [\App\Http\Controllers\Admin\AdminReturnController::class, 'index'])->name('admin.returns.index');
+    Route::get('/returns/{id}', [\App\Http\Controllers\Admin\AdminReturnController::class, 'show'])->name('admin.returns.show');
+    Route::post('/returns/{id}/approve', [\App\Http\Controllers\Admin\AdminReturnController::class, 'approve'])->name('admin.returns.approve');
+    Route::post('/returns/{id}/reject', [\App\Http\Controllers\Admin\AdminReturnController::class, 'reject'])->name('admin.returns.reject');
+    Route::post('/returns/{id}/complete', [\App\Http\Controllers\Admin\AdminReturnController::class, 'complete'])->name('admin.returns.complete');
 
     // Banners Management
     Route::resource('banners', AdminBannerController::class)->names([
@@ -112,4 +124,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     // Shipping Settings
     Route::get('/shipping', [AdminShippingController::class, 'edit'])->name('admin.shipping.edit');
     Route::put('/shipping', [AdminShippingController::class, 'update'])->name('admin.shipping.update');
+
+    // Coupons CRUD & Report
+    Route::resource('coupons', AdminCouponController::class)->names([
+        'index' => 'admin.coupons.index',
+        'create' => 'admin.coupons.create',
+        'store' => 'admin.coupons.store',
+        'show' => 'admin.coupons.show',
+        'edit' => 'admin.coupons.edit',
+        'update' => 'admin.coupons.update',
+        'destroy' => 'admin.coupons.destroy',
+    ]);
 });
