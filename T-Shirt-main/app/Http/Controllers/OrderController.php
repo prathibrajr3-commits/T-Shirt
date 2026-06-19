@@ -15,20 +15,12 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $order = Order::with(['items.product'])->findOrFail($id);
+        $order = Order::with(['items.product', 'histories.user'])->findOrFail($id);
 
-        // Security check: ensure user owns the order, unless user is admin
-        if ($order->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
-            abort(403, 'Unauthorized.');
-        }
+        \Illuminate\Support\Facades\Gate::authorize('view', $order);
 
-        // Stepper mapping
-        $statuses = ['pending', 'processing', 'shipped', 'delivered'];
-        $currentStatusIndex = array_search($order->status, $statuses);
-        if ($order->status === 'cancelled') {
-            $currentStatusIndex = -1; // special handling
-        }
+        $milestones = $order->getMilestones();
 
-        return view('orders.show', compact('order', 'statuses', 'currentStatusIndex'));
+        return view('orders.show', compact('order', 'milestones'));
     }
 }

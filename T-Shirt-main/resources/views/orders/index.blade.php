@@ -46,7 +46,7 @@
                             @foreach($orders as $order)
                                 <tr>
                                     <td class="fw-bold text-white">{{ $order->order_number }}</td>
-                                    <td>{{ $order->created_at->format('M d, Y') }}</td>
+                                    <td>{{ $order->created_at->timezone(config('app.timezone'))->format('M d, Y h:i A') }}</td>
                                     <td>
                                         @if($order->status === 'pending')
                                             <span class="badge bg-warning text-dark badge-custom">{{ $order->status }}</span>
